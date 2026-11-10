@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#087b45">
+<title>Souk DZ - سوق الجزائر</title>
+<style>
+:root{--green:#087b45;--red:#e23b43}
+*{box-sizing:border-box}
+body{margin:0;background:#f4f7f5;color:#17231c;font-family:Arial,sans-serif}
+header{background:linear-gradient(120deg,#05683b,#0b9656);color:white;padding:18px;border-radius:0 0 22px 22px}
+.brand{text-align:center;font-size:27px;font-weight:bold}
+.brand small{display:block;font-size:13px}
+.search{display:flex;background:white;border-radius:12px;padding:12px;margin-top:15px}
+.search input{border:0;outline:0;width:100%;font-size:15px}
+main{max-width:850px;margin:auto;padding:14px}
+.banner{background:white;padding:18px;border-radius:16px;margin:12px 0;text-align:center}
+.banner h2{color:var(--green)}
+h3{margin-top:22px}
+.categories{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cat{background:white;border-radius:13px;padding:15px 5px;text-align:center;font-weight:bold;box-shadow:0 2px 8px #0001}
+.cat span{display:block;font-size:27px;margin-bottom:8px}
+.products{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.product{background:white;border-radius:14px;padding:12px}
+.photo{text-align:center;font-size:40px;background:#e9f5ed;padding:18px;border-radius:10px}
+.price{color:var(--green);font-weight:bold;margin:8px 0}
+button{cursor:pointer;border:0;border-radius:10px;padding:10px;background:var(--green);color:white;font-weight:bold}
+.adbtn{width:100%;margin-top:8px}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chips button{background:#e2eee6;color:#087b45}
+.notice{background:#fff5df;padding:13px;border-radius:12px;margin-top:18px}
+.bottom{display:flex;justify-content:space-around;background:white;padding:15px;position:sticky;bottom:0}
+.bottom button{background:white;color:#087b45}
+.modal{display:none;position:fixed;inset:0;background:#0009;align-items:center;justify-content:center;padding:15px}
+.modal>div{background:white;padding:20px;border-radius:15px;width:100%;max-width:420px}
+.modal input,.modal textarea,.modal select{width:100%;padding:12px;margin:6px 0;border:1px solid #ccc;border-radius:9px;font-size:15px}
+@media(min-width:650px){.categories{grid-template-columns:repeat(4,1fr)}.products{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="brand">🛒 Souk DZ 🇩🇿
+<small>سوق الجزائر بين يديك • أعلن، تسوق، تواصل</small>
+</div>
+<div class="search">
+<input id="q" placeholder="ابحث عن سلعة أو خدمة أو ولاية...">
+</div>
+</header>
+
+<main>
+<div class="banner">
+<h2>بيع واشتري بكل سهولة</h2>
+<p>سوق جزائري شامل لجميع الولايات</p>
+<strong>🇩🇿 Souk DZ</strong>
+</div>
+
+<h3>الأقسام الرئيسية</h3>
+<div class="categories" id="cats"></div>
+
+<h3>إعلانات مختارة</h3>
+<div class="chips">
+<button onclick="filterCat('الكل')">الكل</button>
+<button onclick="filterCat('سيارات')">سيارات</button>
+<button onclick="filterCat('مواشي')">مواشي</button>
+<button onclick="filterCat('عقارات')">عقارات</button>
+<button onclick="filterCat('كوسميتيك')">كوسميتيك</button>
+</div>
+
+<div class="products" id="products"></div>
+
+<div class="notice">
+🤝 مساحة تضامن للجمعيات والمساجد ونداءات المساعدة.
+</div>
+</main>
+
+<nav class="bottom">
+<button>⌂ الرئيسية</button>
+<button onclick="document.getElementById('cats').scrollIntoView()">الأقسام</button>
+<button onclick="openModal()">＋ أضف إعلان</button>
+<button>♡ المفضلة</button>
+<button>حسابي</button>
+</nav>
+
+<div class="modal" id="modal">
+<div>
+<button onclick="closeModal()">إغلاق ×</button>
+<h3>نشر إعلان جديد</h3>
+<input id="name" placeholder="عنوان الإعلان">
+<select id="category">
+<option>منتجات</option>
+<option>سيارات</option>
+<option>مواشي</option>
+<option>عقارات</option>
+<option>إلكترونيات</option>
+<option>كوسميتيك</option>
+<option>مواد غذائية</option>
+<option>قطع غيار</option>
+<option>خدمات</option>
+</select>
+<input id="price" placeholder="السعر بالدينار">
+<input id="city" placeholder="الولاية والبلدية">
+<textarea id="desc" placeholder="وصف الإعلان"></textarea>
+<button onclick="addAd()">إضافة الإعلان</button>
+</div>
+</div>
+
+<script>
+const categories=[
+['سيارات','🚗'],['عقارات','🏠'],
+['مواشي','🐑'],['إلكترونيات','📱'],
+['ملابس','👕'],['كوسميتيك','💄'],
+['مواد غذائية','🍎'],['قطع غيار','⚙️'],
+['أطباء','🩺'],['خدمات','🛠️'],
+['فلاحة وأعلاف','🌾'],['مساجد وجمعيات','🕌']
+];
+
+let ads=[
+{name:'سيارة للبيع',category:'سيارات',emoji:'🚙',price:'السعر عند الاتصال',city:'الجزائر'},
+{name:'خروف بلدي',category:'مواشي',emoji:'🐏',price:'السعر قابل للتفاوض',city:'الجلفة'},
+{name:'هاتف ذكي',category:'إلكترونيات',emoji:'📱',price:'السعر عند الاتصال',city:'سطيف'},
+{name:'شقة للبيع',category:'عقارات',emoji:'🏡',price:'السعر عند الاتصال',city:'الجزائر'}
+];
+
+let active='الكل';
+
+const cats=document.getElementById('cats');
+const products=document.getElementById('products');
+const modal=document.getElementById('modal');
+
+function renderCats(){
+cats.innerHTML=categories.map(c=>
+`<div class="cat" onclick="filterCat('${c[0]}')">
+<span>${c[1]}</span>${c[0]}</div>`
+).join('');
+}
+
+function render(){
+const q=document.getElementById('q').value.toLowerCase();
+const filtered=ads.filter(a=>
+(active==='الكل'||a.category===active)&&
+(a.name+' '+a.category+' '+a.city).toLowerCase().includes(q)
+);
+
+products.innerHTML=filtered.map(a=>
+`<div class="product">
+<div class="photo">${a.emoji}</div>
+<strong>${a.name}</strong>
+<div class="price">${a.price}</div>
+<small>📍 ${a.city} • ${a.category}</small>
+<button class="adbtn" onclick="alert('سيتم تطوير التواصل المباشر في النسخة القادمة')">التفاصيل</button>
+</div>`
+).join('')||'<p>لا توجد إعلانات.</p>';
+}
+
+function filterCat(c){
+active=c;
+render();
+}
+
+function openModal(){
+modal.style.display='flex';
+}
+
+function closeModal(){
+modal.style.display='none';
+}
+
+function addAd(){
+const name=document.getElementById('name').value.trim();
+if(!name){
+alert('أدخل عنوان الإعلان');
+return;
+}
+
+ads.unshift({
+name:name,
+category:document.getElementById('category').value,
+emoji:'📦',
+price:document.getElementById('price').value||'السعر عند الاتصال',
+city:document.getElementById('city').value||'الجزائر'
+});
+
+render();
+closeModal();
+alert('تمت إضافة الإعلان للمعاينة');
+}
+
+document.getElementById('q').addEventListener('input',render);
+
+renderCats();
+render();
+</script>
+</body>
+</html>
