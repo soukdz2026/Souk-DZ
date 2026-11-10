@@ -1,0 +1,153 @@
+
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#087b45">
+<title>Souk DZ | سوق الجزائر</title>
+<style>
+:root{--g:#087b45;--r:#e23b43;--bg:#f4f7f5;--ink:#17231c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:system-ui,'Noto Sans Arabic',sans-serif;color:var(--ink)}
+header{background:linear-gradient(120deg,#05683b,#0b9656);color:white;padding:14px 16px 18px;border-radius:0 0 24px 24px;box-shadow:0 4px 16px #003b2220}
+.brand{display:flex;align-items:center;gap:10px}
+.brand b{font-size:22px}
+.brand small{display:block;opacity:.9}
+.search{display:flex;margin-top:14px;background:white;border-radius:14px;padding:10px 12px;gap:8px}
+.search input{border:0;outline:0;flex:1;font-size:15px}
+.wrap{max-width:850px;margin:auto;padding:14px}
+.banner{background:#fff;border-radius:18px;padding:15px;display:flex;align-items:center;gap:12px;margin:14px 0;box-shadow:0 3px 12px #1231}
+.banner h2{margin:0 0 5px;color:var(--g);font-size:19px}
+.banner p{margin:0;font-size:13px;color:#53645a}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:18px 2px 10px}
+.section-title h3{margin:0;font-size:18px}
+.categories{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.cat{background:white;border-radius:14px;padding:13px 5px;text-align:center;font-size:13px;font-weight:650;box-shadow:0 2px 8px #1231}
+.cat span{display:block;font-size:25px;margin-bottom:5px}
+.chips{display:flex;gap:8px;overflow:auto;padding:2px 0 8px}
+.chip{border:1px solid #cbd9d0;border-radius:30px;padding:8px 14px;background:white;white-space:nowrap;font-size:13px}
+.products{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.product{background:white;border-radius:15px;overflow:hidden;box-shadow:0 2px 9px #1231}
+.photo{height:112px;background:linear-gradient(135deg,#e2f3e8,#f7f8f7);display:grid;place-items:center;font-size:42px}
+.info{padding:10px}
+.info b{font-size:14px}
+.price{color:var(--g);font-weight:800;margin:5px 0}
+.muted{font-size:12px;color:#68766d}
+.adbtn,.primary{background:var(--g);color:white;border:0;border-radius:11px;padding:10px 13px;font-weight:700}
+.adbtn{width:100%;margin-top:7px}
+.notice{background:#fff8e7;border:1px solid #f0dfb3;border-radius:13px;padding:12px;font-size:13px;margin-top:14px}
+.bottom{position:sticky;bottom:0;background:#fff;border-top:1px solid #e1e8e3;display:flex;justify-content:space-around;padding:9px 4px calc(9px + env(safe-area-inset-bottom));margin-top:20px}
+.bottom button{border:0;background:none;color:#53645a;font-size:12px}
+.bottom span{display:block;font-size:20px}
+.modal{display:none;position:fixed;inset:0;background:#0008;align-items:center;justify-content:center;padding:18px}
+.modal>div{background:white;border-radius:18px;padding:18px;width:min(420px,100%)}
+.modal input,.modal textarea,.modal select{width:100%;padding:11px;margin:6px 0;border:1px solid #ccd8d0;border-radius:10px;font:inherit}
+.close{float:left;border:0;background:none;font-size:22px}
+@media(min-width:650px){
+.products{grid-template-columns:repeat(3,1fr)}
+.categories{grid-template-columns:repeat(6,1fr)}
+.photo{height:145px}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">
+<div style="font-size:40px">🛒</div>
+<div><b>Souk DZ 🇩🇿</b><small>سوق الجزائر بين يديك • أعلن، تسوّق، تواصل</small></div>
+</div>
+<div class="search">
+<span>🔎</span>
+<input id="q" placeholder="ابحث عن سلعة أو خدمة أو ولاية...">
+<span>☰</span>
+</div>
+</header>
+<main class="wrap">
+<div class="banner">
+<div style="font-size:55px">🇩🇿</div>
+<div><h2>بيع واشتري بكل سهولة</h2><p>من المحلات والمنتجات إلى المواشي والخدمات، في جميع ولايات الجزائر.</p></div>
+</div>
+<div class="section-title"><h3>الأقسام الرئيسية</h3><small>كل الجزائر</small></div>
+<div class="categories" id="cats"></div>
+<div class="section-title"><h3>إعلانات مختارة</h3><button class="primary" onclick="openModal()">＋ أضف إعلاناً</button></div>
+<div class="chips">
+<button class="chip" onclick="filterCat('الكل')">الكل</button>
+<button class="chip" onclick="filterCat('سيارات')">سيارات</button>
+<button class="chip" onclick="filterCat('مواشي')">مواشي</button>
+<button class="chip" onclick="filterCat('عقارات')">عقارات</button>
+<button class="chip" onclick="filterCat('إلكترونيات')">إلكترونيات</button>
+</div>
+<div class="products" id="products"></div>
+<div class="notice">🤝 <b>مساحة تضامن:</b> يمكن للمساجد والجمعيات نشر نداءات المساعدة والتواصل مباشرة مع المحسنين. لا يستقبل Souk DZ أموال التبرعات.</div>
+</main>
+<nav class="bottom">
+<button><span>⌂</span>الرئيسية</button>
+<button onclick="document.getElementById('cats').scrollIntoView()"><span>▦</span>الأقسام</button>
+<button onclick="openModal()"><span>＋</span>أضف إعلان</button>
+<button><span>♡</span>المفضلة</button>
+<button><span>♙</span>حسابي</button>
+</nav>
+<div class="modal" id="modal">
+<div>
+<button class="close" onclick="closeModal()">×</button>
+<h3>نشر إعلان جديد</h3>
+<input id="name" placeholder="عنوان الإعلان">
+<select id="category">
+<option>منتجات</option><option>سيارات</option><option>مواشي</option><option>عقارات</option><option>إلكترونيات</option><option>ملابس</option><option>كوسميتيك</option><option>مواد غذائية</option><option>قطع غيار</option><option>أطباء</option><option>حرفيون وخدمات</option><option>فلاحة وأعلاف</option><option>مساجد وجمعيات</option>
+</select>
+<input id="price" placeholder="السعر بالدينار الجزائري">
+<input id="city" placeholder="الولاية والبلدية">
+<textarea id="desc" placeholder="وصف الإعلان"></textarea>
+<button class="primary" style="width:100%" onclick="addAd()">إضافة الإعلان للمعاينة</button>
+<p class="muted">هذه نسخة أولية؛ النشر العام وتسجيل الحسابات يتطلبان خادماً وقاعدة بيانات.</p>
+</div>
+</div>
+<script>
+const categories=[
+['سيارات','🚗'],['عقارات','🏠'],['مواشي','🐑'],
+['إلكترونيات','📱'],['ملابس','👕'],['كوسميتيك','💄'],
+['مواد غذائية','🍎'],['قطع غيار','⚙️'],['أطباء','🩺'],
+['حرفيون وخدمات','🛠️'],['فلاحة وأعلاف','🌾'],['مساجد وجمعيات','🕌']
+];
+const samples=[
+['سيارة للبيع','سيارات','🚙','السعر حسب الحالة'],
+['خروف بلدي','مواشي','🐏','السعر قابل للتفاوض'],
+['هاتف ذكي','إلكترونيات','📱','حالة جيدة'],
+['شقة للبيع','عقارات','🏡','اتصل لمعرفة التفاصيل']
+];
+let ads=samples.map(x=>({name:x[0],category:x[1],emoji:x[2],price:x[3],city:'الجزائر'}));
+let active='الكل';
+function renderCats(){
+document.getElementById('cats').innerHTML=categories.map(c=>`<div class="cat" onclick="filterCat('${c[0]}')"><span>${c[1]}</span>${c[0]}</div>`).join('');
+}
+function render(){
+let q=document.getElementById('q').value.toLowerCase();
+document.getElementById('products').innerHTML=ads.filter(a=>(active==='الكل'||a.category===active)&&(`${a.name} ${a.category} ${a.city}`).toLowerCase().includes(q)).map(a=>`<article class="product"><div class="photo">${a.emoji||'📦'}</div><div class="info"><b>${a.name}</b><div class="price">${a.price}</div><div class="muted">📍 ${a.city} • ${a.category}</div><button class="adbtn" onclick="alert('هذه معاينة أولية. التواصل المباشر يحتاج إلى تطوير إضافي.')">التفاصيل</button></div></article>`).join('')||'<p>لا توجد إعلانات مطابقة.</p>';
+}
+function filterCat(c){active=c;render()}
+function openModal(){document.getElementById('modal').style.display='flex'}
+function closeModal(){document.getElementById('modal').style.display='none'}
+function addAd(){
+let n=document.getElementById('name').value.trim();
+if(!n){alert('أدخل عنوان الإعلان');return}
+ads.unshift({
+name:n,
+category:document.getElementById('category').value,
+emoji:'📦',
+price:document.getElementById('price').value||'السعر عند الاتصال',
+city:document.getElementById('city').value||'الجزائر'
+});
+render();closeModal();
+document.getElementById('name').value='';
+document.getElementById('price').value='';
+document.getElementById('city').value='';
+document.getElementById('desc').value='';
+alert('تمت إضافة الإعلان للمعاينة على هذا الجهاز.');
+}
+document.getElementById('q').addEventListener('input',render);
+renderCats();
+render();
+</script>
+</body>
+</html>
